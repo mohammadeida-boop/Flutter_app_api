@@ -69,7 +69,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_id', 'user', 'user_email', 'restaurant', 'restaurant_name',
             'order_status', 'total_amount', 'created_at', 'items'
         ]
-        read_only_fields = ['order_id', 'created_at']
+        read_only_fields = ['order_id','user', 'created_at']
 
 # Create Order Serializer
 class CreateOrderSerializer(serializers.ModelSerializer):

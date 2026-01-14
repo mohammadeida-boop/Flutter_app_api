@@ -74,16 +74,15 @@ class MenuViewSet(viewsets.ModelViewSet):
 # Order ViewSet
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
-    
-    def get_permissions(self):
-        if self.request.user.is_authenticated:
-            return [IsAuthenticated()]
-        return [AllowAny()]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return Order.objects.filter(user=self.request.user)
-        return Order.objects.none()
+        return Order.objects.filter(user=self.request.user)
+    
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateOrderSerializer
+        return OrderSerializer
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

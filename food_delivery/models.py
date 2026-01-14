@@ -1,6 +1,7 @@
 # models.py
+# models.py
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Custom User Manager
@@ -13,26 +14,38 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-
+    
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)  # Add this
         return self.create_user(email, password, **extra_fields)
 
 # User Model
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):  # Add PermissionsMixin
     user_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, verbose_name='الاسم')
     email = models.EmailField(unique=True, verbose_name='البريد الإلكتروني')
     phone = models.CharField(max_length=15, verbose_name='رقم الهاتف')
-    address = models.TextField(verbose_name='العنوان')
+    address = models.TextField(verbose_name='العنوان', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Required fields for Django admin
+    is_active = models.BooleanField(default=True, verbose_name='نشط')
+    is_staff = models.BooleanField(default=False, verbose_name='موظف')
+    is_superuser = models.BooleanField(default=False, verbose_name='مدير')
+    
     @property
     def is_driver(self):
         try:
             return hasattr(self, 'driver')
         except:
             return False
+    @property
+    def id(self):
+        return self.user_id
+    
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'phone']
     
@@ -40,6 +53,10 @@ class User(AbstractBaseUser):
     
     def __str__(self):
         return self.email
+    
+    class Meta:
+        verbose_name = 'مستخدم'
+        verbose_name_plural = 'المستخدمون'
 
 # Restaurant Model
 class Restaurant(models.Model):

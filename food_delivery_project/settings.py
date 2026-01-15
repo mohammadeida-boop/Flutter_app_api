@@ -100,6 +100,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost",  # لـ Flutter Web
     "http://127.0.0.1",  # لـ Flutter Web
     "http://localhost:3000",  # لـ React أو frontend آخر
+    "https://flutter-app-api-1.onrender.com",  # Your Render app
+
 ]
 
 # السماح بجميع الـ Headers

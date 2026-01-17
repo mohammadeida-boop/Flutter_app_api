@@ -106,7 +106,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 # Payment ViewSet
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -127,7 +127,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class DriverViewSet(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     
     @action(detail=False, methods=['get'])
     def available(self, request):
